@@ -30,10 +30,13 @@ const displayCards = (items) => {
     titre.textContent = item.title;
 
     const text = document.createElement("p");
-    text.innerHTML = item.lead_text ;
+    text.innerHTML = item.lead_text;
     text.className = "card-text hide";
 
-    
+   
+    const description = document.createElement("p");
+    description.innerHTML = item.description
+    description.className = "card-text hide"; // 
 
     // Bouton Voir plus / Voir moins 
     const btn = document.createElement("button");
@@ -41,13 +44,23 @@ const displayCards = (items) => {
     btn.className = "toggle-btn";
 
     btn.addEventListener("click", () => {
-      if (text.classList.contains("hide")) {
+      const isHidden = text.classList.contains("hide");
+
+      if (isHidden) {
         text.classList.remove("hide");
         text.classList.add("show");
+
+        description.classList.remove("hide");  
+        description.classList.add("show");     
+
         btn.textContent = "Voir moins";
       } else {
         text.classList.remove("show");
         text.classList.add("hide");
+
+        description.classList.remove("show"); 
+        description.classList.add("hide");     
+
         btn.textContent = "Voir plus";
       }
     });
@@ -55,6 +68,7 @@ const displayCards = (items) => {
     card.appendChild(img);
     card.appendChild(titre);
     card.appendChild(text);
+    card.appendChild(description); 
     card.appendChild(btn);
     div.appendChild(card);
   }
@@ -68,6 +82,7 @@ const getfacts = async () => {
 
     allData = data.results;
     displayCards(allData);
+    // afficher une erreur si Api ne fonctinne pas comme pas de connection URL est incrrecte..
   } catch (error) {
     console.error("Erreur :", error);
     div.innerHTML = "<p class='no-result'>Erreur lors du chargement des données</p>";
@@ -82,7 +97,8 @@ searchInput.addEventListener("input", () => {
 
   const filtered = allData.filter(item =>
     item.title.toLowerCase().includes(value) ||
-    (item.lead_text && item.lead_text.toLowerCase().includes(value))
+    (item.lead_text && item.lead_text.toLowerCase().includes(value)) ||
+    (item.description && item.description.toLowerCase().includes(value)) // recherche description
   );
 
   if (filtered.length === 0) {
@@ -96,6 +112,7 @@ searchInput.addEventListener("input", () => {
 
   displayCards(filtered);
 });
+
 
 
 

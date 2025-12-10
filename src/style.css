@@ -61,26 +61,75 @@ body {
   color: #333;
 }
 
-/* --- Texte des cartes --- */
+/* Texte des cartes lead_text + description  */
 .card-text {
+  box-sizing: border-box;
   font-size: 14px;
   color: #555;
-  margin: 0 15px 15px;
-  line-height: 1.5;
+  margin: 0;
+  line-height: 1.6; /* un peu plus lisible */
   overflow: hidden;
-  transition: max-height 0.3s ease;
+  max-height: 0;
+  padding: 0 15px;
+  opacity: 0;
+  transition:
+    max-height 0.5s cubic-bezier(.2,.8,.2,1),
+    opacity 0.35s ease,
+    padding 0.35s ease;
+  position: relative;
 }
 
-/* hide / show */
+/* dégradé pour texte long */
+.card-text::after {
+  content: "";
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0), #fff);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* fermé */
 .card-text.hide {
   max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  opacity: 0;
 }
 
+.card-text.hide::after {
+  opacity: 0;
+}
+
+/* ouvert */
 .card-text.show {
-  max-height: 500px;
+  max-height: 500px; /* hauteur visible avant scroll */
+  padding-top: 12px;
+  padding-bottom: 15px;
+  opacity: 1;
+  overflow-y: auto;  /* scroll interne si texte trop long */
 }
 
-/* --- Bouton Voir plus / Voir moins --- */
+.card-text.show::after {
+  opacity: 1;
+}
+
+/* scrollbar */
+.card-text.show::-webkit-scrollbar {
+  width: 6px;
+}
+
+.card-text.show::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.2);
+  border-radius: 3px;
+}
+
+ /* Bouton Voir plus / Voir moins  */
 .toggle-btn {
   display: block;
   margin: 0 15px 15px;
@@ -105,8 +154,8 @@ body {
   font-size: 24px;
   color: white;
 }
-
-/* --- Responsive --- */
+/* 
+ Responsive   */
 @media (max-width: 600px) {
   #app {
     grid-template-columns: 1fr;
@@ -125,5 +174,6 @@ body {
     padding: 6px 10px;
   }
 }
+
 
 
